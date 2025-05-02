@@ -1,0 +1,60 @@
+{
+  "Roll": [
+    {
+      "name": "Tuna Roll",
+      "image": "/src/assets/sushi/Tuna.jpg",
+      "description": "Seafood stick, cucumber, avocado with mayo.",
+      "price": 3.7
+    },
+    {
+      "name": "Tuna Avo Roll",
+      "image": "/src/assets/sushi/Tuna avo.jpg",
+      "description": "Seafood stick, cucumber, avocado with mayo.",
+      "price": 3.7
+    }
+  ],
+  "Rice Bowl": [
+    {
+      "name": "Katsu Chicken Bowl",
+      "image": "/src/assets/sushi/katsu.jpg",
+      "description": "Crispy chicken cutlet with sauce over rice.",
+      "price": 12.0
+    }
+  ],
+  "Special": [
+    {
+      "name": "Philadelphia (Not Available)",
+      "image": "/src/assets/sushi/philadelphia.jpg",
+      "description": "Salmon, avocado, and cream cheese. (This item is no longer available.)",
+      "price": 7.0
+    }
+  ],
+  "Snacks": [
+    {
+      "name": "Takoyaki",
+      "image": "/src/assets/snacks/takoyaki.jpg",
+      "description": "Japanese octopus balls with sauce and bonito flakes.",
+      "price": 6.0
+    },
+    {
+      "name": "Edamame",
+      "image": "/src/assets/snacks/edamame.jpg",
+      "description": "Lightly salted boiled green soybeans.",
+      "price": 4.0
+    }
+  ],
+  "Drinks": [
+    {
+      "name": "Iced Green Tea",
+      "image": "/src/assets/drinks/green-tea.jpg",
+      "description": "Refreshing sugar-free Japanese green tea.",
+      "price": 3.0
+    },
+    {
+      "name": "Coca-Cola",
+      "image": "/src/assets/drinks/coke.jpg",
+      "description": "Classic chilled Coke.",
+      "price": 3.0
+    }
+  ]
+}
