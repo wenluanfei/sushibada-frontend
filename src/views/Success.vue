@@ -76,7 +76,15 @@ onMounted(() => {
 function sendEmail() {
 const templateParams = {
   to_name: reservation.value.name,
+  phone: reservation.value.phone,
   to_email: reservation.value.email,
+  pickup_date: reservation.value.pickupDate,
+  pickup_time: reservation.value.pickupTime,
+  size: reservation.value.size,
+  type: reservation.value.type,
+  sushi: reservation.value.selectedSushi?.join(', ') || '',
+  notes: reservation.value.notes || '',
+  pickupCode: reservation.value.pickupCode || '',
 }
 
 
