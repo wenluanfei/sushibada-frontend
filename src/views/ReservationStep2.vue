@@ -135,12 +135,12 @@ async function handleSubmit() {
 
     const data = await response.json()
 
-    if (data?.url && data?.pickupCode) {
-      // ✅ 使用后端返回的 pickupCode
-      store.pickupCode = data.pickupCode
-      localStorage.setItem('reservation', JSON.stringify(store.$state))
-      window.location.href = data.url
-    } else {
+  if (data?.url && data?.pickupCode) {
+    store.pickupCode = data.pickupCode
+    localStorage.setItem('reservation', JSON.stringify(store.$state))
+    window.location.href = data.url
+  }
+  else {
       alert('Stripe checkout failed to generate URL.')
     }
   } catch (error) {

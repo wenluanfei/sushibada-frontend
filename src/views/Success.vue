@@ -65,13 +65,12 @@ const emailSent = ref(false)
 onMounted(() => {
   const data = localStorage.getItem('reservation')
   if (data) {
-    const parsed = JSON.parse(data)
-    reservation.value = parsed
+    reservation.value = JSON.parse(data)
     sendEmail()
   }
 })
 
-// 邮件发送逻辑
+// 邮件发送逻辑（使用 reservation.value.pickupCode）
 function sendEmail() {
   const templateParams = {
     name: reservation.value.name,

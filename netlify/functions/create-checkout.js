@@ -1,15 +1,15 @@
 const Stripe = require('stripe')
-
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2023-10-16',
 })
-const pickupCode = Math.random().toString(36).substring(2, 8).toUpperCase()
-
 
 exports.handler = async (event) => {
-  const { size, name, phone, email, notes, pickupDate, pickupTime, selectedSushi, type } = JSON.parse(event.body || '{}')
+  const {
+    size, name, phone, email, notes,
+    pickupDate, pickupTime, selectedSushi, type
+  } = JSON.parse(event.body || '{}')
 
-  const pickupCode = Math.random().toString(36).substring(2, 8).toUpperCase()  // ✅ 每次请求生成新的
+  const pickupCode = Math.random().toString(36).substring(2, 8).toUpperCase()  // ✅ 只定义一次！
 
   const priceId =
     size === 'large'
@@ -30,7 +30,7 @@ exports.handler = async (event) => {
         notes: notes || '',
         pickupDate,
         pickupTime,
-        pickupCode, // ✅ 写入元数据
+        pickupCode, // ✅ 正确绑定
         type,
         sushi: Array.isArray(selectedSushi) ? selectedSushi.join(', ') : '',
       },
@@ -38,7 +38,7 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ url: session.url, pickupCode }), // ✅ 返回给前端保存
+      body: JSON.stringify({ url: session.url, pickupCode }), // ✅ 返回给前端
     }
   } catch (err) {
     return {
@@ -47,5 +47,3 @@ exports.handler = async (event) => {
     }
   }
 }
-
-console.log('STRIPE_KEY:', process.env.STRIPE_SECRET_KEY)
