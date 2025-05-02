@@ -74,19 +74,26 @@ onMounted(() => {
 
 // 邮件发送逻辑（使用 reservation.value.pickupCode）
 function sendEmail() {
-const templateParams = {
-  to_name: reservation.value.name,
-  phone: reservation.value.phone,
-  to_email: reservation.value.email,
-  pickup_date: reservation.value.pickupDate,
-  pickup_time: reservation.value.pickupTime,
-  size: reservation.value.size,
-  type: reservation.value.type,
-  sushi: reservation.value.selectedSushi?.join(', ') || '',
-  notes: reservation.value.notes || '',
-  pickupCode: reservation.value.pickupCode || '',
-}
+  const templateParams = {
+    to_name: reservation.value.name,
+    phone: reservation.value.phone,
+    to_email: reservation.value.email,
+    pickup_date: reservation.value.pickupDate,
+    pickup_time: reservation.value.pickupTime,
+    size: reservation.value.size,
+    type: reservation.value.type,
+    sushi: reservation.value.selectedSushi?.join(', ') || '',
+    notes: reservation.value.notes || '',
+    pickupCode: reservation.value.pickupCode || ''
+  }
 
+  console.log('📤 Sending EmailJS with:', templateParams) // ✅ 调试输出，确保字段正确
+
+  // 检查关键字段
+  if (!templateParams.to_name || !templateParams.to_email || !templateParams.pickupCode) {
+    console.error('❌ Missing required fields for email:', templateParams)
+    return
+  }
 
   emailjs
     .send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY)
@@ -98,4 +105,5 @@ const templateParams = {
       console.error('❌ EmailJS error:', error)
     })
 }
+
 </script>
