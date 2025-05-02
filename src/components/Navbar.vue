@@ -4,7 +4,7 @@
 
     <div class="space-x-4 flex items-center flex-wrap text-sm">
       <router-link to="/" class="text-white hover:text-sushibada-gold transition">Home</router-link>
-      <router-link to="/reserve/info" class="text-white hover:text-sushibada-gold transition">Order Details</router-link>
+      <router-link to="/reserve/" class="text-white hover:text-sushibada-gold transition">Order Details</router-link>
       <router-link to="/menu" class="text-white hover:text-sushibada-gold transition">Menu</router-link>
 
       <router-link to="/stores" class="text-white hover:text-sushibada-gold transition">Store</router-link>

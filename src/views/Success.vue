@@ -16,8 +16,25 @@
     </div>
 
     <p class="text-green-700" v-if="emailSent">
-      📧 Confirmation email sent to {{ reservation.email }}
+      📧 Confirmation email sent to <strong>{{ reservation.email }}</strong>
     </p>
+
+    <!-- 邮箱更改与重发区域 -->
+    <div class="mt-6 text-left">
+      <label class="block mb-1 font-semibold">Want to resend the email or fix the email address?</label>
+      <input
+        type="email"
+        v-model="overrideEmail"
+        class="border p-2 rounded w-full mb-2"
+        placeholder="Enter a new email address"
+      />
+      <button
+        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        @click="resendEmail"
+      >
+        📧 Resend Confirmation Email
+      </button>
+    </div>
   </div>
 </template>
 
@@ -52,27 +69,37 @@ const reservation = ref<Reservation>({
   selectedSushi: [],
   notes: ''
 })
+
 const emailSent = ref(false)
+const overrideEmail = ref('') // 用户输入的新邮箱
 
 onMounted(() => {
   const data = localStorage.getItem('reservation')
+  const emailFlag = localStorage.getItem('email_sent')
+
   if (data) {
     reservation.value = JSON.parse(data)
-    sendEmail()
+    overrideEmail.value = reservation.value.email
+
+    if (!emailFlag) {
+      sendEmail(reservation.value.email)
+    } else {
+      emailSent.value = true
+    }
   }
 })
 
-function sendEmail() {
+// 默认发邮件函数
+function sendEmail(targetEmail: string) {
   const templateParams = {
     to_name: reservation.value.name,
-    to_email: reservation.value.email,
+    to_email: targetEmail,
     pickup_date: reservation.value.pickupDate,
     pickup_time: reservation.value.pickupTime,
     phone: reservation.value.phone,
     size: reservation.value.size,
     type: reservation.value.type
   }
-
 
   if (!templateParams.to_name || !templateParams.to_email) {
     console.error('❌ Missing required fields for email:', templateParams)
@@ -83,10 +110,21 @@ function sendEmail() {
     .send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY)
     .then(() => {
       emailSent.value = true
-      console.log('✅ Email sent to', reservation.value.email)
+      localStorage.setItem('email_sent', 'true')
+      reservation.value.email = targetEmail // 更新展示用邮箱
+      console.log('✅ Email sent to', targetEmail)
     })
     .catch((error) => {
       console.error('❌ EmailJS error:', error)
     })
+}
+
+// 点击“重新发送”按钮
+function resendEmail() {
+  if (!overrideEmail.value) {
+    alert('Please enter a valid email address.')
+    return
+  }
+  sendEmail(overrideEmail.value)
 }
 </script>
