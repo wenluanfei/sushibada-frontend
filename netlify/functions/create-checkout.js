@@ -28,7 +28,6 @@ exports.handler = async (event) => {
         notes: notes || '',
         pickupDate,
         pickupTime,
-        pickupCode: '', // 可以省略
         type,
         sushi: Array.isArray(selectedSushi) ? selectedSushi.join(', ') : '',
       },

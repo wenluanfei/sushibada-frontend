@@ -1,8 +1,6 @@
 <template>
   <div class="max-w-xl mx-auto p-6 text-center">
     <h2 class="text-2xl font-bold text-green-600 mb-4">🎉 Thank you for your payment!</h2>
-    <p class="text-lg mb-4">Your pickup code is:</p>
-    <p class="text-3xl font-mono font-bold text-orange-500 mb-6">{{ reservation.pickupCode }}</p>
 
     <div class="text-left bg-white p-4 rounded shadow mb-6">
       <p><strong>Name:</strong> {{ reservation.name }}</p>
@@ -27,7 +25,6 @@
 import { ref, onMounted } from 'vue'
 import emailjs from '@emailjs/browser'
 
-// 类型定义
 interface Reservation {
   name: string
   phone: string
@@ -38,15 +35,12 @@ interface Reservation {
   type: 'mix' | 'custom'
   selectedSushi: string[]
   notes?: string
-  pickupCode: string
 }
 
-// EmailJS 配置
-const SERVICE_ID = 'service_3tcpksf'
+const SERVICE_ID = 'service_hs7yetf'
 const TEMPLATE_ID = 'template_gps0swa'
 const PUBLIC_KEY = 'F7cV3O3qDLzcVAlTy'
 
-// 状态
 const reservation = ref<Reservation>({
   name: '',
   phone: '',
@@ -56,41 +50,31 @@ const reservation = ref<Reservation>({
   size: 'regular',
   type: 'mix',
   selectedSushi: [],
-  notes: '',
-  pickupCode: ''
+  notes: ''
 })
 const emailSent = ref(false)
 
-// 页面加载时读取预约信息 & 发邮件
 onMounted(() => {
   const data = localStorage.getItem('reservation')
   if (data) {
     reservation.value = JSON.parse(data)
-    sendEmail() // 邮件中也会包含 session.id
+    sendEmail()
   }
 })
 
-
-
-// 邮件发送逻辑（使用 reservation.value.pickupCode）
 function sendEmail() {
   const templateParams = {
     to_name: reservation.value.name,
-    phone: reservation.value.phone,
     to_email: reservation.value.email,
     pickup_date: reservation.value.pickupDate,
     pickup_time: reservation.value.pickupTime,
+    phone: reservation.value.phone,
     size: reservation.value.size,
-    type: reservation.value.type,
-    sushi: reservation.value.selectedSushi?.join(', ') || '',
-    notes: reservation.value.notes || '',
-    pickupCode: reservation.value.pickupCode || ''
+    type: reservation.value.type
   }
 
-  console.log('📤 Sending EmailJS with:', templateParams) // ✅ 调试输出，确保字段正确
 
-  // 检查关键字段
-  if (!templateParams.to_name || !templateParams.to_email || !templateParams.pickupCode) {
+  if (!templateParams.to_name || !templateParams.to_email) {
     console.error('❌ Missing required fields for email:', templateParams)
     return
   }
@@ -105,5 +89,4 @@ function sendEmail() {
       console.error('❌ EmailJS error:', error)
     })
 }
-
 </script>

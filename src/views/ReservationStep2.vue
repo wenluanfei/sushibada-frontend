@@ -85,12 +85,14 @@ store.pickupTime = ''
 store.pickupCode = '' // 新增字段
 
 const sushiOptions = [
-  'Salmon Roll',
+  'Salmon Avo Roll',
   'Tuna Roll',
-  'Eel Nigiri',
-  'Avocado Maki',
-  'Shrimp Tempura',
-  'California Roll'
+  'Tuna Avo Roll',
+  'Avocado Roll',
+  'Tempura Veg Roll',
+  'Avo Roll',
+  'Teriyaki Roll',
+  'Chincken Avo Roll'
 ]
 
 async function handleSubmit() {
