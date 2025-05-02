@@ -74,18 +74,11 @@ onMounted(() => {
 
 // 邮件发送逻辑（使用 reservation.value.pickupCode）
 function sendEmail() {
-  const templateParams = {
-    to_name: reservation.value.name,
-    to_email: reservation.value.email,
-    phone: reservation.value.phone,
-    pickupCode: reservation.value.pickupCode,
-    pickup_date: reservation.value.pickupDate,
-    pickup_time: reservation.value.pickupTime,
-    size: reservation.value.size,
-    type: reservation.value.type,
-    sushi: reservation.value.selectedSushi?.join(', ') || '',
-    notes: reservation.value.notes || ''
-  }
+const templateParams = {
+  to_name: reservation.value.name,
+  to_email: reservation.value.email,
+}
+
 
   emailjs
     .send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY)
