@@ -6,12 +6,13 @@ import ReservationStep2 from '../views/ReservationStep2.vue'
 import Home from '../views/Home.vue'
 // router/index.ts
 import StorePage from '../views/StorePage.vue'
-
+import Success from '../views/Success.vue'
 import Menu from '../views/Menu.vue'
 const routes = [
   { path: '/', component: Home },
   { path: '/reserve', component: ReservationStep1 },
   { path: '/reserve/info', component: ReservationStep2 },
+  { path: '/success', component: Success },
   { path: '/stores', component: StorePage },
   { path: '/menu', component: Menu },
 ]

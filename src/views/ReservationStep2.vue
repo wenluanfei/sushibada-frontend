@@ -38,18 +38,18 @@
         type="submit"
         class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
       >
-        Submit Reservation
+        Submit Reservation & Pay
       </button>
+
     </form>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useReservationStore } from '../store/reservation'
-import { useRouter } from 'vue-router'
 
 const store = useReservationStore()
-const router = useRouter()
+
 
 const sushiOptions = [
   'Salmon Roll',
@@ -60,7 +60,7 @@ const sushiOptions = [
   'California Roll'
 ]
 
-function handleSubmit() {
+async function handleSubmit() {
   if (!store.name || !store.phone || !store.email) {
     alert('Please fill all required fields.')
     return
@@ -71,19 +71,29 @@ function handleSubmit() {
     return
   }
 
-  // ✅ 模拟提交，真实项目可发送 API 请求
-  console.log('Reservation submitted:', {
-    size: store.size,
-    type: store.type,
-    name: store.name,
-    phone: store.phone,
-    email: store.email,
-    notes: store.notes,
-    sushi: store.selectedSushi
-  })
+  // 🧾 准备 Stripe Checkout 请求
+  try {
+    const response = await fetch('/.netlify/functions/create-checkout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ size: store.size }),
+    })
 
-  alert('🎉 Reservation submitted successfully!')
-  store.reset()
-  router.push('/')
+    const data = await response.json()
+
+    if (data?.url) {
+      // ✅ 跳转到 Stripe 支付页面
+      window.location.href = data.url
+    } else {
+      alert('Stripe checkout failed to generate URL.')
+    }
+  } catch (error) {
+    console.error('Stripe checkout error:', error)
+    alert('Failed to connect to payment server.')
+  }
 }
+
+
 </script>

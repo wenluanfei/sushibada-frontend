@@ -1,7 +1,7 @@
 <template>
   <section
     class="bg-cover bg-center py-40 px-4 text-white text-center"
-    :style="{ backgroundImage: `url(/src/assets/hero-bg.jpg)` }"
+    :style="{ backgroundImage: `url(\hero-bg.jpg)` }"
   >
     <div class="max-w-3xl mx-auto">
       <h1 class="text-3xl md:text-5xl font-bold mb-3 drop-shadow">Welcome to SushiBada</h1>
