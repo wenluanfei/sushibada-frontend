@@ -5,7 +5,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 })
 
 exports.handler = async (event) => {
-  const { size } = JSON.parse(event.body || '{}')
+  const { size, name, phone, email, notes, pickupDate, pickupTime, selectedSushi, type } = JSON.parse(event.body || '{}')
+
 
   const priceId =
     size === 'large'
@@ -19,8 +20,18 @@ exports.handler = async (event) => {
       mode: 'payment',
       success_url: 'https://sushibada.netlify.app/success',
       cancel_url: 'https://sushibada.netlify.app/reserve',
-      
+      metadata: {
+        name,
+        phone,
+        email,
+        notes: notes || '',
+        pickupDate,
+        pickupTime,
+        type,
+        sushi: Array.isArray(selectedSushi) ? selectedSushi.join(', ') : '',
+      },
     })
+    
 
     return {
       statusCode: 200,

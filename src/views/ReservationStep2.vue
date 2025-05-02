@@ -19,6 +19,29 @@
       </div>
 
       <div>
+        <label class="font-semibold block mb-1">Pickup Date *</label>
+        <input
+          type="date"
+          v-model="store.pickupDate"
+          class="w-full border p-2 rounded"
+          :min="minDate"
+          required
+        />
+      </div>
+
+      <div>
+        <label class="font-semibold block mb-1">Pickup Time *</label>
+        <input
+          type="time"
+          v-model="store.pickupTime"
+          class="w-full border p-2 rounded"
+          min="10:00"
+          max="16:00"
+          required
+        />
+      </div>
+
+      <div>
         <label class="font-semibold block mb-1">Notes</label>
         <textarea v-model="store.notes" class="w-full border p-2 rounded"></textarea>
       </div>
@@ -49,6 +72,14 @@
 import { useReservationStore } from '../store/reservation'
 
 const store = useReservationStore()
+// 日期控制（今天 + 1）
+const today = new Date()
+today.setDate(today.getDate() + 1)
+const minDate = today.toISOString().split('T')[0]
+
+// 加入预约信息字段
+store.pickupDate = ''
+store.pickupTime = ''
 
 
 const sushiOptions = [
@@ -66,6 +97,18 @@ async function handleSubmit() {
     return
   }
 
+  if (!store.pickupDate || !store.pickupTime) {
+    alert('Please select a pickup date and time.')
+    return
+  }
+
+  const [hourStr] = store.pickupTime.split(':')
+  const hour = parseInt(hourStr)
+  if (hour < 10 || hour > 16) {
+    alert('Pickup time must be between 10:00 AM and 4:00 PM.')
+    return
+  }
+
   if (store.type === 'custom' && store.selectedSushi.length === 0) {
     alert('Please select at least one sushi for your custom platter.')
     return
@@ -73,13 +116,24 @@ async function handleSubmit() {
 
   // 🧾 准备 Stripe Checkout 请求
   try {
-    const response = await fetch('/.netlify/functions/create-checkout', {
+        const response = await fetch('/.netlify/functions/create-checkout', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ size: store.size }),
+      body: JSON.stringify({
+        size: store.size,
+        name: store.name,
+        phone: store.phone,
+        email: store.email,
+        notes: store.notes,
+        pickupDate: store.pickupDate,
+        pickupTime: store.pickupTime,
+        selectedSushi: store.selectedSushi,
+        type: store.type,
+      }),
     })
+
 
     const data = await response.json()
 
