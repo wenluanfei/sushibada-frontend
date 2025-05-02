@@ -66,19 +66,21 @@ onMounted(() => {
   const data = localStorage.getItem('reservation')
   if (data) {
     reservation.value = JSON.parse(data)
-    sendEmail()
+    sendEmail() // 邮件中也会包含 session.id
   }
 })
+
+
 
 // 邮件发送逻辑（使用 reservation.value.pickupCode）
 function sendEmail() {
   const templateParams = {
-    name: reservation.value.name,
-    email: reservation.value.email,
+    to_name: reservation.value.name,
+    to_email: reservation.value.email,
     phone: reservation.value.phone,
     pickupCode: reservation.value.pickupCode,
-    pickupDate: reservation.value.pickupDate,
-    pickupTime: reservation.value.pickupTime,
+    pickup_date: reservation.value.pickupDate,
+    pickup_time: reservation.value.pickupTime,
     size: reservation.value.size,
     type: reservation.value.type,
     sushi: reservation.value.selectedSushi?.join(', ') || '',

@@ -12,6 +12,7 @@ export const useReservationStore = defineStore('reservation', {
     selectedSushi: [] as string[],
     pickupDate: '',
     pickupTime: '',
+    pickupCode: '',
   }),
   actions: {
     reset() {

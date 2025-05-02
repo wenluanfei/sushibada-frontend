@@ -135,11 +135,12 @@ async function handleSubmit() {
 
 const data = await response.json()
 
-  if (data?.url && data?.pickupCode) {
-    store.pickupCode = data.pickupCode
-    localStorage.setItem('reservation', JSON.stringify(store.$state))
-    window.location.href = data.url
-  }
+if (data?.url && data?.pickupCode) {
+  store.pickupCode = data.pickupCode // ✅ 保存 session.id 作为唯一码
+  localStorage.setItem('reservation', JSON.stringify(store.$state))
+  window.location.href = data.url
+}
+
   else {
       alert('Stripe checkout failed to generate URL.')
     }

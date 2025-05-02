@@ -9,8 +9,6 @@ exports.handler = async (event) => {
     pickupDate, pickupTime, selectedSushi, type
   } = JSON.parse(event.body || '{}')
 
-  const pickupCode = Math.random().toString(36).substring(2, 8).toUpperCase()  // ✅ 只定义一次！
-
   const priceId =
     size === 'large'
       ? 'price_1RKAqqRvb17p84Tx07a506ji'
@@ -30,7 +28,7 @@ exports.handler = async (event) => {
         notes: notes || '',
         pickupDate,
         pickupTime,
-        pickupCode, // ✅ 正确绑定
+        pickupCode: '', // 可以省略
         type,
         sushi: Array.isArray(selectedSushi) ? selectedSushi.join(', ') : '',
       },
@@ -38,7 +36,10 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ url: session.url, pickupCode }), // ✅ 返回给前端
+      body: JSON.stringify({
+        url: session.url,
+        pickupCode: session.id // ✅ 用 session.id 作为唯一码
+      }),
     }
   } catch (err) {
     return {
