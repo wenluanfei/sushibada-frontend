@@ -66,28 +66,18 @@ onMounted(() => {
   const data = localStorage.getItem('reservation')
   if (data) {
     const parsed = JSON.parse(data)
-    const code = generateCode()
-    reservation.value = {
-      ...parsed,
-      pickupCode: code
-    }
-    sendEmail(code)
+    reservation.value = parsed
+    sendEmail()
   }
 })
 
-function generateCode(): string {
-  return Math.random().toString(36).substring(2, 8).toUpperCase()
-}
-
-
-
 // 邮件发送逻辑
-function sendEmail(code: string) {
+function sendEmail() {
   const templateParams = {
     name: reservation.value.name,
     email: reservation.value.email,
     phone: reservation.value.phone,
-    pickupCode: code, // ✅ 用生成的 code
+    pickupCode: reservation.value.pickupCode,
     pickupDate: reservation.value.pickupDate,
     pickupTime: reservation.value.pickupTime,
     size: reservation.value.size,
@@ -106,6 +96,4 @@ function sendEmail(code: string) {
       console.error('❌ EmailJS error:', error)
     })
 }
-
 </script>
-
