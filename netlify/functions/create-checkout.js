@@ -20,6 +20,7 @@ exports.handler = async (event) => {
       mode: 'payment',
       success_url: 'https://sushibada.netlify.app/success',
       cancel_url: 'https://sushibada.netlify.app/reserve',
+      cancel_url: 'https://sushibada.netlify.app/cancel',
       metadata: {
         name,
         phone,

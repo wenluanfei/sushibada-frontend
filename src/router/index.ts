@@ -7,12 +7,14 @@ import Home from '../views/Home.vue'
 // router/index.ts
 import StorePage from '../views/StorePage.vue'
 import Success from '../views/Success.vue'
+import Cancel from '../views/Cancel.vue'
 import Menu from '../views/Menu.vue'
 const routes = [
   { path: '/', component: Home },
   { path: '/reserve', component: ReservationStep1 },
   { path: '/reserve/info', component: ReservationStep2 },
   { path: '/success', component: Success },
+  { path: '/cancel', component: Cancel },
   { path: '/stores', component: StorePage },
   { path: '/menu', component: Menu },
 ]
