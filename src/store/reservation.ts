@@ -3,13 +3,15 @@ import { defineStore } from 'pinia'
 
 export const useReservationStore = defineStore('reservation', {
   state: () => ({
-    size: '' as 'small' | 'large' | '',
+    size: '' as 'regular' | 'large' | '',
     type: '' as 'mix' | 'custom' | '',
     name: '',
     phone: '',
     email: '',
     notes: '',
-    selectedSushi: [] as string[]
+    selectedSushi: [] as string[],
+    pickupDate: '',
+    pickupTime: '',
   }),
   actions: {
     reset() {
@@ -20,6 +22,8 @@ export const useReservationStore = defineStore('reservation', {
       this.email = ''
       this.notes = ''
       this.selectedSushi = []
+      this.pickupDate = ''
+      this.pickupTime = ''
     }
   }
 })
