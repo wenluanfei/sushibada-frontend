@@ -43,7 +43,7 @@ interface MenuItem {
 const menuSections = ref<{ category: string; items: MenuItem[] }[]>([])
 
 onMounted(async () => {
-  const res = await fetch('/src/data/menu.json')
+  const res = await fetch('/data/menu.json')
   const data = await res.json()
 
   menuSections.value = Object.keys(data).map(category => ({
