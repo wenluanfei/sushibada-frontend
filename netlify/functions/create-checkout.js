@@ -3,6 +3,8 @@ const Stripe = require('stripe')
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2023-10-16',
 })
+const pickupCode = Math.random().toString(36).substring(2, 8).toUpperCase()
+
 
 exports.handler = async (event) => {
   const { size, name, phone, email, notes, pickupDate, pickupTime, selectedSushi, type } = JSON.parse(event.body || '{}')
@@ -27,6 +29,7 @@ exports.handler = async (event) => {
         email,
         notes: notes || '',
         pickupDate,
+        pickupCode,
         pickupTime,
         type,
         sushi: Array.isArray(selectedSushi) ? selectedSushi.join(', ') : '',

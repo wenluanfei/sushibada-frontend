@@ -54,7 +54,9 @@
             <span>{{ item }}</span>
           </label>
         </div>
-        <p v-if="store.selectedSushi.length === 0" class="text-sm text-red-500 mt-1">Please select at least one item.</p>
+        <p v-if="store.selectedSushi.length === 0" class="text-sm text-red-500 mt-1">
+          Please select at least one item.
+        </p>
       </div>
 
       <button
@@ -63,7 +65,6 @@
       >
         Submit Reservation & Pay
       </button>
-
     </form>
   </div>
 </template>
@@ -72,15 +73,16 @@
 import { useReservationStore } from '../store/reservation'
 
 const store = useReservationStore()
-// 日期控制（今天 + 1）
+
+// 设置可选日期为明天起
 const today = new Date()
 today.setDate(today.getDate() + 1)
 const minDate = today.toISOString().split('T')[0]
 
-// 加入预约信息字段
+// 初始化字段
 store.pickupDate = ''
 store.pickupTime = ''
-
+store.pickupCode = '' // 新增字段
 
 const sushiOptions = [
   'Salmon Roll',
@@ -114,13 +116,16 @@ async function handleSubmit() {
     return
   }
 
-  // 🧾 准备 Stripe Checkout 请求
+  // ✅ 生成提取码
+  store.pickupCode = Math.random().toString(36).substring(2, 8).toUpperCase()
+
   try {
-        const response = await fetch('/.netlify/functions/create-checkout', {
+    // 保存本地数据（用于 success 页面展示）
+    localStorage.setItem('reservation', JSON.stringify(store.$state))
+
+    const response = await fetch('/.netlify/functions/create-checkout', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         size: store.size,
         name: store.name,
@@ -131,14 +136,13 @@ async function handleSubmit() {
         pickupTime: store.pickupTime,
         selectedSushi: store.selectedSushi,
         type: store.type,
+        pickupCode: store.pickupCode
       }),
     })
-
 
     const data = await response.json()
 
     if (data?.url) {
-      // ✅ 跳转到 Stripe 支付页面
       window.location.href = data.url
     } else {
       alert('Stripe checkout failed to generate URL.')
@@ -148,6 +152,4 @@ async function handleSubmit() {
     alert('Failed to connect to payment server.')
   }
 }
-
-
 </script>
