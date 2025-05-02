@@ -133,7 +133,7 @@ async function handleSubmit() {
       }),
     })
 
-    const data = await response.json()
+const data = await response.json()
 
   if (data?.url && data?.pickupCode) {
     store.pickupCode = data.pickupCode
