@@ -9,6 +9,7 @@ const pickupCode = Math.random().toString(36).substring(2, 8).toUpperCase()
 exports.handler = async (event) => {
   const { size, name, phone, email, notes, pickupDate, pickupTime, selectedSushi, type } = JSON.parse(event.body || '{}')
 
+  const pickupCode = Math.random().toString(36).substring(2, 8).toUpperCase()  // ✅ 每次请求生成新的
 
   const priceId =
     size === 'large'
@@ -22,24 +23,22 @@ exports.handler = async (event) => {
       mode: 'payment',
       success_url: 'https://sushibada.netlify.app/success',
       cancel_url: 'https://sushibada.netlify.app/reserve',
-      cancel_url: 'https://sushibada.netlify.app/cancel',
       metadata: {
         name,
         phone,
         email,
         notes: notes || '',
         pickupDate,
-        pickupCode,
         pickupTime,
+        pickupCode, // ✅ 写入元数据
         type,
         sushi: Array.isArray(selectedSushi) ? selectedSushi.join(', ') : '',
       },
     })
-    
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ url: session.url }),
+      body: JSON.stringify({ url: session.url, pickupCode }), // ✅ 返回给前端保存
     }
   } catch (err) {
     return {

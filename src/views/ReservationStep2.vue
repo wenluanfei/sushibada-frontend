@@ -116,13 +116,7 @@ async function handleSubmit() {
     return
   }
 
-  // ✅ 生成提取码
-  store.pickupCode = Math.random().toString(36).substring(2, 8).toUpperCase()
-
   try {
-    // 保存本地数据（用于 success 页面展示）
-    localStorage.setItem('reservation', JSON.stringify(store.$state))
-
     const response = await fetch('/.netlify/functions/create-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -135,14 +129,16 @@ async function handleSubmit() {
         pickupDate: store.pickupDate,
         pickupTime: store.pickupTime,
         selectedSushi: store.selectedSushi,
-        type: store.type,
-        pickupCode: store.pickupCode
+        type: store.type
       }),
     })
 
     const data = await response.json()
 
-    if (data?.url) {
+    if (data?.url && data?.pickupCode) {
+      // ✅ 使用后端返回的 pickupCode
+      store.pickupCode = data.pickupCode
+      localStorage.setItem('reservation', JSON.stringify(store.$state))
       window.location.href = data.url
     } else {
       alert('Stripe checkout failed to generate URL.')
@@ -152,4 +148,5 @@ async function handleSubmit() {
     alert('Failed to connect to payment server.')
   }
 }
+
 </script>
