@@ -21,7 +21,7 @@ const router = useRouter()
 
 const login = async () => {
   try {
-    const response = await fetch('http://localhost:5000/api/admin/login', {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: email.value, password: password.value }) 
