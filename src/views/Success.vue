@@ -76,15 +76,34 @@ const overrideEmail = ref('') // 用户输入的新邮箱
 onMounted(() => {
   const data = localStorage.getItem('reservation')
   const emailFlag = localStorage.getItem('email_sent')
+  const orderFlag = localStorage.getItem('order_saved') // 🔧 新增标志位，防止重复保存
 
   if (data) {
     reservation.value = JSON.parse(data)
     overrideEmail.value = reservation.value.email
 
+    // 1️⃣ 发送确认邮件
     if (!emailFlag) {
       sendEmail(reservation.value.email)
     } else {
       emailSent.value = true
+    }
+
+    // 2️⃣ 保存订单到后端数据库（只执行一次）
+    if (!orderFlag) {
+      fetch('http://localhost:5000/api/order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reservation.value)
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log('✅ Order saved to backend:', data)
+          localStorage.setItem('order_saved', 'true') // 防止重复保存
+        })
+        .catch((err) => {
+          console.error('❌ Failed to save order:', err)
+        })
     }
   }
 })
