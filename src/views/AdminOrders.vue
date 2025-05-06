@@ -21,6 +21,12 @@
         <strong>Sushi:</strong> {{ order.selectedSushi.join(', ') }}
       </p>
       <p v-if="order.notes"><strong>Notes:</strong> {{ order.notes }}</p>
+       <button
+    class="mt-3 bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+    @click="deleteOrder(order._id)"
+  >
+    🗑️ Delete
+  </button>
     </div>
   </div>
 </template>
@@ -42,6 +48,29 @@ interface Order {
   selectedSushi: string[]
   notes?: string
 }
+
+const deleteOrder = async (id: string) => {
+  const confirmDelete = confirm('Are you sure you want to delete this order?')
+  if (!confirmDelete) return
+
+  try {
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/orders/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('admin_token')}`,
+      },
+    })
+
+    if (res.ok) {
+      orders.value = orders.value.filter(order => order._id !== id)
+    } else {
+      alert('Failed to delete order')
+    }
+  } catch (error) {
+    console.error('❌ Delete order error:', error)
+  }
+}
+
 
 const orders = ref<Order[]>([])
 const loading = ref(true)
