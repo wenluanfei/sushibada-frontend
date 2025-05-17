@@ -39,7 +39,7 @@
           <p v-if="item.sauce">Sauce: {{ item.sauce }}</p>
         </div>
         <div v-if="item.image">
-          <img :src="getImageUrl(item.image)" alt="Sushi Image" class="w-32 rounded" />
+          <img :src="item.image" alt="Sushi Image" class="w-32 rounded" />
         </div>
         <div class="flex gap-2 justify-end">
           <button class="bg-yellow-500 text-white px-3 py-1 rounded" @click="openEdit(item)">✏️ Edit</button>
@@ -104,14 +104,16 @@ const editForm = ref({ ...form.value })
 
 const token = localStorage.getItem('admin_token')
 
-// 获取图片完整 URL
-const getImageUrl = (path: string) => `${import.meta.env.VITE_API_BASE_URL}${path}`
-
-// 获取所有菜单项
+// ✅ 获取所有菜单项（带 token）
 const fetchItems = async () => {
   loading.value = true
   try {
-    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/menu`)
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/menu`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    if (!res.ok) throw new Error('Unauthorized')
     const data = await res.json()
     items.value = data.items
   } catch (err) {
@@ -123,6 +125,7 @@ const fetchItems = async () => {
 
 onMounted(fetchItems)
 
+// 选择图片文件
 const handleImage = (e: Event) => {
   const target = e.target as HTMLInputElement
   if (target.files && target.files[0]) {
@@ -130,12 +133,11 @@ const handleImage = (e: Event) => {
   }
 }
 
+// 添加菜单项
 const handleAdd = async () => {
   const body = new FormData()
   Object.entries(form.value).forEach(([key, value]) => body.append(key, value.toString()))
-  if (imageFile.value) {
-    body.append('image', imageFile.value)
-  }
+  if (imageFile.value) body.append('image', imageFile.value)
 
   try {
     const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/menu`, {
@@ -158,6 +160,7 @@ const handleAdd = async () => {
   }
 }
 
+// 删除菜单项
 const deleteItem = async (id: string) => {
   if (!confirm('Are you sure to delete this item?')) return
   try {
@@ -174,11 +177,13 @@ const deleteItem = async (id: string) => {
   }
 }
 
+// 打开编辑弹窗
 const openEdit = (item: MenuItem) => {
   editingItem.value = { ...item }
   editForm.value = { ...item }
 }
 
+// 更新菜单项
 const updateItem = async () => {
   if (!editingItem.value) return
 
