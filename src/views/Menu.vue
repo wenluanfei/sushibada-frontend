@@ -1,54 +1,66 @@
 <template>
-  <section
-    v-motion
-    :initial="{ opacity: 0, y: 30 }"
-    :enter="{ opacity: 1, y: 0, transition: { duration: 0.8 } }"
-    class="py-12 px-6 bg-sushibada-soft text-sushibada-red"
-  >
-    <h2 class="text-3xl font-bold text-sushibada-gold text-center mb-8">🍽️ Our Menu</h2>
+  <div class="max-w-6xl mx-auto p-6">
+    <h2 class="text-3xl font-bold mb-6">🍣 Our Menu</h2>
 
-    <div v-for="section in menuSections" :key="section.category" class="mb-12">
-      <h3 class="text-2xl font-semibold mb-4">{{ section.category }}</h3>
+    <div v-if="loading">Loading menu...</div>
+    <div v-else-if="menuItems.length === 0">No menu items found.</div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 items-stretch">
-        <div
-          v-for="item in section.items"
-          :key="item.name"
-          v-motion
-          :hover="{ scale: 1.03 }"
-          class="bg-white rounded-lg shadow p-4 hover:shadow-lg transition"
-        >
-          <img :src="item.image" :alt="item.name" class="w-full h-40 object-cover rounded" />
-          <h4 class="mt-2 text-lg font-bold">{{ item.name }}</h4>
-          <p class="text-sm text-gray-600" v-if="item.description">{{ item.description }}</p>
-          <div class="mt-2 text-sushibada-gold font-semibold" v-if="item.price">
-            ${{ item.price.toFixed(2) }}
+    <div v-else>
+      <div v-for="(items, category) in groupedMenu" :key="category" class="mb-8">
+        <h3 class="text-2xl font-semibold mb-4">{{ category }}</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div
+            v-for="item in items"
+            :key="item._id"
+            class="bg-white rounded shadow p-4"
+          >
+            <h4 class="text-lg font-bold">{{ item.name }}</h4>
+            <p class="text-gray-600">{{ item.description }}</p>
+            <p class="text-sm text-gray-500 mt-1">Sauce: {{ item.sauce || 'N/A' }}</p>
+            <p class="text-sm text-gray-500">Ingredients: {{ item.ingredients || 'N/A' }}</p>
+            <p class="mt-2 font-semibold text-orange-600">${{ item.price?.toFixed(2) || 'N/A' }}</p>
           </div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 
 interface MenuItem {
+  _id: string
   name: string
-  image: string
-  description?: string
+  description: string
+  category: string
+  sauce?: string
+  ingredients?: string
   price?: number
 }
 
-const menuSections = ref<{ category: string; items: MenuItem[] }[]>([])
+const menuItems = ref<MenuItem[]>([])
+const loading = ref(true)
 
 onMounted(async () => {
-  const res = await fetch('/data/menu.json')
-  const data = await res.json()
+  try {
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/menu`)
+    const data = await res.json()
+    menuItems.value = data.items || []
+  } catch (error) {
+    console.error('❌ Failed to load menu:', error)
+  } finally {
+    loading.value = false
+  }
+})
 
-  menuSections.value = Object.keys(data).map(category => ({
-    category,
-    items: data[category]
-  }))
+const groupedMenu = computed(() => {
+  return menuItems.value.reduce((acc: Record<string, MenuItem[]>, item) => {
+    if (!acc[item.category]) {
+      acc[item.category] = []
+    }
+    acc[item.category].push(item)
+    return acc
+  }, {})
 })
 </script>
