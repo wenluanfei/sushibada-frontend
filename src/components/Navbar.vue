@@ -7,7 +7,7 @@
       <router-link to="/reserve/" class="text-white hover:text-sushibada-gold transition">Order Details</router-link>
       <router-link to="/menu" class="text-white hover:text-sushibada-gold transition">Menu</router-link>
 
-      <router-link to="/stores" class="text-white hover:text-sushibada-gold transition">Store</router-link>
+      <router-link to="/stores" class="text-white hover:text-sushibada-gold transition">Connect Us</router-link>
 
     </div>
   </nav>
