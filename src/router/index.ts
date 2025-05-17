@@ -10,6 +10,7 @@ import Cancel from '../views/Cancel.vue'
 import Menu from '../views/Menu.vue'
 import AdminLogin from '../views/AdminLogin.vue'
 import AdminOrders from '../views/AdminOrders.vue'
+import AdminMenu from '../views/AdminMenu.vue'
 const routes = [
   { path: '/', component: Home },
   { path: '/reserve', component: ReservationStep1 },
@@ -20,6 +21,7 @@ const routes = [
   { path: '/menu', component: Menu },
   { path: '/admin/login', component: AdminLogin },
   { path: '/admin/orders', component: AdminOrders },
+  { path: '/admin/menu', name: 'AdminMenu', component: AdminMenu },
 ]
 
 

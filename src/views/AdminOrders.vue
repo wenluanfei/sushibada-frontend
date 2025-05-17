@@ -21,21 +21,55 @@
         <strong>Sushi:</strong> {{ order.selectedSushi.join(', ') }}
       </p>
       <p v-if="order.notes"><strong>Notes:</strong> {{ order.notes }}</p>
-       <button
-    class="mt-3 bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-    @click="deleteOrder(order._id)"
-  >
-    🗑️ Delete
-  </button>
+
+      <div class="flex gap-2 mt-3">
+        <button
+          class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
+          @click="openEditModal(order)"
+        >
+          ✏️ Edit
+        </button>
+        <button
+          class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+          @click="deleteOrder(order._id)"
+        >
+          🗑️ Delete
+        </button>
+      </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div
+      v-if="showModal"
+      class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+    >
+      <div class="bg-white p-6 rounded w-full max-w-lg shadow-lg relative">
+        <h3 class="text-xl font-semibold mb-4">Edit Order</h3>
+        <label class="block mb-2">Name:</label>
+        <input v-model="editForm.name" class="border p-2 w-full mb-3 rounded" />
+
+        <label class="block mb-2">Phone:</label>
+        <input v-model="editForm.phone" class="border p-2 w-full mb-3 rounded" />
+
+        <label class="block mb-2">Email:</label>
+        <input v-model="editForm.email" class="border p-2 w-full mb-3 rounded" />
+
+        <label class="block mb-2">Notes:</label>
+        <textarea v-model="editForm.notes" class="border p-2 w-full mb-4 rounded"></textarea>
+
+        <div class="flex justify-end gap-2">
+          <button @click="showModal = false" class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400">Cancel</button>
+          <button @click="submitEdit" class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">Save</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
-// 定义 Order 类型
 interface Order {
   _id: string
   name: string
@@ -49,9 +83,46 @@ interface Order {
   notes?: string
 }
 
+const orders = ref<Order[]>([])
+const loading = ref(true)
+const showModal = ref(false)
+const editForm = ref<Partial<Order>>({})
+const router = useRouter()
+
+const openEditModal = (order: Order) => {
+  editForm.value = { ...order }
+  showModal.value = true
+}
+
+const submitEdit = async () => {
+  const token = localStorage.getItem('admin_token')
+  if (!token || !editForm.value._id) return
+
+  try {
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/orders/${editForm.value._id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(editForm.value),
+    })
+
+    if (res.ok) {
+      const updated = await res.json()
+      const index = orders.value.findIndex(o => o._id === updated._id)
+      if (index !== -1) orders.value[index] = updated
+      showModal.value = false
+    } else {
+      alert('Failed to update order')
+    }
+  } catch (error) {
+    console.error('❌ Edit order error:', error)
+  }
+}
+
 const deleteOrder = async (id: string) => {
-  const confirmDelete = confirm('Are you sure you want to delete this order?')
-  if (!confirmDelete) return
+  if (!confirm('Are you sure you want to delete this order?')) return
 
   try {
     const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/orders/${id}`, {
@@ -71,11 +142,6 @@ const deleteOrder = async (id: string) => {
   }
 }
 
-
-const orders = ref<Order[]>([])
-const loading = ref(true)
-const router = useRouter()
-
 onMounted(async () => {
   const token = localStorage.getItem('admin_token')
   if (!token) {
@@ -89,7 +155,6 @@ onMounted(async () => {
         Authorization: `Bearer ${token}`,
       },
     })
-
 
     if (res.status === 401) {
       localStorage.removeItem('admin_token')
