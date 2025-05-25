@@ -1,47 +1,33 @@
-# 🍣 SushiBada Frontend
+# 🍱 SushiBada Frontend
 
-欢迎来到 **SushiBada** 寿司店的前端项目！这是一个现代化响应式网站，支持菜单展示、派对拼盘预约、线上支付及商家后台管理，专为位于澳大利亚 Oxenford 的实体店开发。
+**SushiBada** is a sushi restaurant’s online party platter reservation website, allowing users to browse the menu, submit orders, and view store details. This is the **frontend** built with **Vue 3 + Vite + TypeScript + Tailwind CSS**.
 
----
-
-## 🔗 项目地址
-
-- 用户端页面：https://sushibada.netlify.app/  
-- 商家后台入口：https://sushibada.netlify.app/admin/login
-
-> 💡 请将以上链接替换为你部署后的网址。
+🔧 [Backend Repository](https://github.com/wenluanfei/sushibada-backend)  
+🌐 [Live Site (Netlify)](https://sushibada.netlify.app)
 
 ---
 
-## ✨ 功能亮点
+## ✨ Features
 
-- 🍱 浏览寿司菜单（支持分类、图片、价格展示）
-- 📅 提交拼盘预约表单（含姓名、邮箱、电话、拼盘类型）
-- 💌 自动邮件通知（使用 EmailJS）
-- 💳 Stripe Checkout 在线支付（防止虚假订单）
-- 🔐 商家后台管理（需登录）：
-  - 添加 / 修改 / 删除菜单项
-  - 上传菜单图片（Cloudinary）
-  - 查看 / 删除用户订单
+- 🧾 Dynamic menu display with categorized sections
+- 📩 Reservation form with email and phone
+- 📷 Admin menu management with image uploads
+- 🔐 Admin login page and order viewing dashboard
+- 🌍 Google Maps embedded store locator
+- 📱 Responsive design for mobile and desktop
 
 ---
 
-## 🛠 技术栈
+## 🛠 Tech Stack
 
-- **Vue 3** + **Vite** + **TypeScript**
-- **Tailwind CSS**（快速构建响应式页面）
-- **Framer Motion Vue**（页面过渡动画）
-- **Stripe Checkout**（集成支付功能）
-- **EmailJS**（用户预约邮件发送）
-- **Cloudinary**（菜单图片上传）
-- **Netlify** / **Vercel** 部署
+- [Vue 3](https://vuejs.org/) + [Vite](https://vitejs.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Vue Router](https://router.vuejs.org/)
+- [Cloudinary](https://cloudinary.com/) (for image hosting)
+- [JWT](https://jwt.io/) (for admin authentication)
 
 ---
 
-## 🚀 本地开发指南
-
-### 1. 克隆项目
-
-```bash
-git clone https://github.com/yourname/sushibada-frontend.git
-cd sushibada-frontend
+## 📜 License
+MIT — free to use for educational. Commercial use requires permission.
